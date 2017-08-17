@@ -41,12 +41,12 @@ if(!defined('DSCORE_BASENAME')) {
  */
  if ( ! class_exists( 'dsCoupons' ) ) :
     
-        class DirectStripe {
+        class dsCoupons {
     
             /**
              * Plugin file path.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              * @var string
              */
             const FILE = __FILE__;
@@ -54,7 +54,7 @@ if(!defined('DSCORE_BASENAME')) {
             /**
              * Plugin directory path.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              * @var string
              */
             const DIR = __DIR__;
@@ -62,15 +62,15 @@ if(!defined('DSCORE_BASENAME')) {
             /**
              * Plugin Version.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              * @var string
              */
-            const version = '2.0.0';
+            const version = '0.0.1';
     
             /**
              * Plugin Textdomain.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              * @var string
              */
             const domain = 'direct-stripe';
@@ -81,73 +81,38 @@ if(!defined('DSCORE_BASENAME')) {
             public function __construct() {
                 $this->includes();
                 $this->init_hooks();
-                $this->activation_hooks();
             }
     
-            function activation_hooks() {
-                register_activation_hook( self::FILE,  array( $this, 'direct_stripe_on_activation') );
-            }
-            /**
-             * Add Stripe user role on plugin activation
-             *
-             * @since 2.0.0
-             */
-            function direct_stripe_on_activation() {
-                add_role( 'stripe-user', __('Stripe user', 'direct-stripe'), array( 'read' => true ));
-            }
             
             /**
              * Hook into actions and filters.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              */
             public function init_hooks() {
                 add_action( 'plugins_loaded', array( $this, 'load_translation' ) );
-                add_filter('plugin_action_links', array( $this, 'ds_plugin_action_links'), 10, 2);
             }
     
             /**
              * Load plugin translation.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              */
             public function load_translation() {
                 load_plugin_textdomain( self::domain, false, plugin_basename( self::DIR ) . '/languages' );
-            }
-            
-            /**
-             * Add shortcut from plugins page
-             *
-             * @since 2.0.0
-             */
-            function ds_plugin_action_links($links, $file) {
-                static $this_plugin;
-            
-                if (!$this_plugin) {
-                    $this_plugin = plugin_basename(__FILE__);
-                }
-            
-                if ($file == $this_plugin) {
-                    $settings_link = '<a href="' . admin_url( 'admin.php?page=direct_stripe') . '">'.__("Settings","direct-stripe").'</a>';
-                    array_unshift($links, $settings_link);
-                }
-            
-                return $links;
             }
             
     
             /**
              * Include required core files.
              *
-             * @since 2.0.0
+             * @since 0.0.1
              */
             public function includes() {
-                include_once( 'controllers/class-ds-scripts.php' );
-                include_once( 'controllers/class-ds-admin.php' );
-                include_once( 'controllers/class-ds-button.php' );
-                include_once( 'controllers/class-ds-cpt.php' );
-                //include_once( 'controllers/class-ds-logs-taxonomies.php' );
-                include_once( 'controllers/class-ds-users.php' );
+                include_once( 'controllers/class-ds-coupons.php' );
+                if( is_admin() ) {
+                    include_once( 'controllers/class-ds-coupons-admin.php' );
+                }
             }
         }
     
